@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Practice 1</title>
+    <script type="text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+      div.bar {
+        display: inline-block;
+        width: 20px;
+        height: 75px; /* We'll override height later */
+        margin: 5px;
+        background-color: teal;
+      }
+    </style>
+
+    <script type="text/javascript">
+      const dataset = [ ];
+      const numPoints = 25;
+
+      const populateDataset = () => {
+        for (let i = 0; i < numPoints; i++) {
+            dataset.push([Math.random() *i*3 ]);
+        };
+      };
+    </script>
+  </head>
+  <body>
+
+    <script>
+        populateDataset();
+        const body = d3.select("body");
+        body.append("h1").text("My first chart!"); 
+
+        d3.select("body").selectAll("div")
+            .data(dataset)
+            .join("div")
+            .attr("class", "bar")
+            .style("height", (d) => {
+            var barHeight = d * 5; //Scale up by factor of 5
+            return barHeight + "px";
+        });
+    </script>
+  </body>
+</html>
