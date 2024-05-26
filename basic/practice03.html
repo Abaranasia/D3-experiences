@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type="text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
+        <title>Practice 03 - Random circles</title>
+        <style>
+            #escenario {
+            border: 1px solid red;
+            width: 800px;
+            height: 150px;
+            margin: 30px auto;
+            padding: 20px;
+            }
+        </style>
+        <script>
+            const dataset = [];
+            const numPoints =16;
+            const w = 800;
+            const h = 150;
+
+            const populaterDataset = () => {
+                for (let i = 1; i < numPoints; i++) {
+                    dataset.push(Math.round(Math.random() *i*4) );
+                };
+                console.log('dataset', dataset)
+                };
+        </script>
+    </head>
+    <body>
+        <div id="escenario">
+        </div>
+
+        <script>
+            const svg = d3.select("#escenario").append("svg");
+            
+            populaterDataset();
+
+            svg
+            .attr("width", w)
+            .attr("height", h);
+
+            const circles = svg.selectAll("circle")
+            .data(dataset)
+            .join("circle");
+            debugger
+            circles
+            .attr("cx", (data, i) => (i * 50) + 25)
+            .attr("cy", h/2)
+            .attr("r", (data) => data);
+                
+            circles
+            .attr("fill", "yellow")
+            .attr("stroke", "orange")
+            .attr("stroke-width", (data) => data/4)
+        </script>
+    </body>
+</html>
