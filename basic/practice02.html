@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice02 - SVG items</title>
+    <script type="text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            margin: 10px;
+            padding: 10px;
+        }
+    </style>
+    <script>
+        const factorX= 20;
+        const factorY= 40;
+        const factorR= 10;
+        const circleColors=['blue', 'green', 'red', 'yellow'];
+
+        const createSVG = () => {        
+            for (let i = 1; i <= 4; i++){
+                createCircle(i)    
+            } 
+        }
+
+        const createCircle = (mult) => (
+            svg.append("circle")
+            .attr("cx", x(mult*factorX))
+            .attr("cy", mult*factorY)
+            .attr("r", mult*factorR)
+            .style("fill", circleColors[mult-1])
+        )      
+    </script>
+</head>
+<body>
+    <svg id="area" height=200 width=450></svg>
+    <script>
+        // Select the svg area
+        const svg = d3.select("#area")
+
+        // Create a scale: transform value in pixel
+        const x = d3.scaleLinear()
+        .domain([0, 100])         // min and the max of the data: 0 to 100 if percentages
+        .range([0, 350]);       // corresponding value in pixels
+        
+        // Show the axis that corresponds to this scale
+        svg.call(d3.axisBottom(x));
+
+        createSVG()
+    </script>
+
+</body>
+</html>
