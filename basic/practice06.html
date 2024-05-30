@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Practice 06 - Dot generator</title>
+		<script type="text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
+		
+		<style type="text/css">
+			#caja {
+				background-color: white;
+				border: 1px solid red;
+				box-sizing: border-box;
+				height: 500px;
+				margin: 20px auto;
+				
+				width: 500px;
+			}
+		</style>
+        <script>
+            const xSize = 500; 
+			const ySize = 500;
+			const margin = 20;
+			const xMax = xSize - margin*2;
+			const yMax = ySize - margin*2;
+			const numPoints = 200;
+			const dataset = [];
+			
+			const populateDataset = () => {
+				resetDataset();
+				for (let i = 0; i < numPoints; i++) {
+					dataset.push([Math.random() * xMax, Math.random() * yMax]);
+				};
+				console.log('dataset', dataset)
+			};
+
+            const resetDataset = () => {
+                dataset.splice(0, dataset.length);
+            }
+
+            const generateDots = () => {
+				populateDataset();
+				update();
+			};
+            
+			const update = () => {
+				const svg = d3.select("#escenario")
+				svg.selectAll("circle")
+				.data(dataset)
+				.attr("cx", function (d) { return d[0] } )
+				.attr("cy", function (d) { return d[1] } )
+				.attr("r", 4)
+			}
+
+            const  init = () => { // Primera ejecución
+				// Creamos el primer dataset
+				populateDataset(); 
+
+				// Construye el svg y lo puebla con el dataset
+				const svg = d3.select("#escenario")
+				.append("svg")
+				.append("g")
+				.attr("transform","translate(" + margin + "," + margin + ")");
+
+				// X Axis
+				const x = d3.scaleLinear()
+					.domain([0, 500])
+					.range([0, xMax]);
+
+				// Y Axis
+				const y = d3.scaleLinear()
+					.domain([0, 500])
+					.range([ yMax, 0]);
+
+				// Dots
+				svg.append('g')
+					.selectAll("dot")
+					.data(dataset).enter()
+					.append("circle")
+					.attr("cx", function (d) { return d[0] } )
+					.attr("cy", function (d) { return d[1] } )
+					.attr("r", 4)
+					.style("fill", "orange");
+			};
+        </script>
+	</head>
+	<body>
+		<div id="caja">
+			<svg id="escenario" style="width:500px;height:500px"></svg>
+		</div>
+		<button onClick="generateDots()">Generar Puntos</button> 
+		
+		<script type="text/javascript">
+			init();	
+	    </script>
+	</body>
+</html>
