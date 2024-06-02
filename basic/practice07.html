@@ -37,7 +37,7 @@
                 }
             }
 
-			const generateScales = () => { //Create scale functions
+			const generateScales = () => {
 				const xScale = d3.scaleLinear()
 								.domain([0, d3.max(dataset, (d) => d[0] )])
 								.range([padding, width - padding * 2]);
@@ -67,7 +67,7 @@
 			return ({xAxis, yAxis})
 			}
 
-			const createDots = (svg, scales) => { // Create circles
+			const createDots = (svg, scales) => {
 				svg.selectAll("circle")
 			   .data(dataset)
 			   .enter()
@@ -93,19 +93,19 @@
 			   .attr("fill", "red");
 			};
 
-		const createAxes = (svg, xAxis, yAxis) => {
-			//Create X axis
-			svg.append("g")
-			.attr("class", "axis")
-			.attr("transform", "translate(0," + (height - padding) + ")")
-			.call(xAxis);
-			
-			//Create Y axis
-			svg.append("g")
+			const createAxes = (svg, xAxis, yAxis) => {
+				//Create X axis
+				svg.append("g")
 				.attr("class", "axis")
-                .attr("transform", "translate(690,0)")
-				.call(yAxis);
-		};
+				.attr("transform", "translate(0," + (height - padding) + ")")
+				.call(xAxis);
+				
+				//Create Y axis
+				svg.append("g")
+					.attr("class", "axis")
+					.attr("transform", "translate(690,0)")
+					.call(yAxis);
+			};
         </script>
 	</head>
 
