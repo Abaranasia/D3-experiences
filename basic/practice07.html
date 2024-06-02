@@ -18,7 +18,7 @@
 			}
 		</style>
         <script>
-			const dataset = [];					//Initialize empty array
+			const dataset = []
 			const numDataPoints = 80;			//Number of dummy data points to create
 			const padding = 30;
 			const width = 750;
@@ -36,25 +36,24 @@
                     dataset.push([newNumber1, newNumber2]);					//Add new number to array
                 }
             }
-        </script>
-	</head>
 
-	<body cz-shortcut-listen="true">
-		<script type="text/javascript">
-            generateDataset()
-			//Create scale functions
-			const xScale = d3.scaleLinear()
-                             .domain([0, d3.max(dataset, (d) => d[0] )])
-                             .range([padding, width - padding * 2]);
+			const generateScales = () => { //Create scale functions
+				const xScale = d3.scaleLinear()
+								.domain([0, d3.max(dataset, (d) => d[0] )])
+								.range([padding, width - padding * 2]);
 
-			const yScale = d3.scaleLinear()
-                             .domain([0, d3.max(dataset, (d) => d[1])])
-                             .range([height - padding, padding]);
+				const yScale = d3.scaleLinear()
+								.domain([0, d3.max(dataset, (d) => d[1])])
+								.range([height - padding, padding]);
 
-			const rScale = d3.scaleLinear()
-                             .domain([0, d3.max(dataset, (d) => d[1])])
-                             .range([2, 15]); // rango de tamaño de los puntos
+				const rScale = d3.scaleLinear()
+								.domain([0, d3.max(dataset, (d) => d[1])])
+								.range([2, 15]); // rango de tamaño de los puntos
 
+				return ({xScale, yScale, rScale})
+			}
+
+			const defineAxes = (xScale, yScale) => {
 			//Define X axis
 			const xAxis = d3.axisBottom()
                             .scale(xScale)
@@ -65,14 +64,11 @@
                             .scale(yScale)
                             .ticks(5);
 
-			//Create SVG element
-			const svg = d3.select("body")
-                          .append("svg")
-                          .attr("width", width)
-                          .attr("height", height);
+			return ({xAxis, yAxis})
+			}
 
-			//Create circles
-			svg.selectAll("circle")
+			const createDots = (svg) => { // Create circles
+				svg.selectAll("circle")
 			   .data(dataset)
 			   .enter()
 			   .append("circle")
@@ -82,9 +78,10 @@
                .attr("fill", accent) // Usando el array de colores
                .attr("stroke", "black") // border negro
                .attr("stroke-width", (d) => d/2);
-			
-			//Create labels
-			svg.selectAll("text")
+			};
+
+			const createLabels = (svg) => {
+				svg.selectAll("text")
 			   .data(dataset)
 			   .enter()
 			   .append("text")
@@ -94,17 +91,41 @@
 			   .attr("font-family", "sans-serif")
 			   .attr("font-size", "11px")
 			   .attr("fill", "red");
-		  	
+			};
+
+		const createAxes = (svg, xAxis, yAxis) => {
 			//Create X axis
 			svg.append("g")
-				.attr("class", "axis")
-				.attr("transform", "translate(0," + (height - padding) + ")")
-				.call(xAxis);
+			.attr("class", "axis")
+			.attr("transform", "translate(0," + (height - padding) + ")")
+			.call(xAxis);
 			
 			//Create Y axis
 			svg.append("g")
 				.attr("class", "axis")
                 .attr("transform", "translate(690,0)")
 				.call(yAxis);
+		};
+
+        </script>
+	</head>
+
+	<body cz-shortcut-listen="true">
+		<script type="text/javascript">
+            generateDataset();
+			const {xScale, yScale, rScale} = generateScales();
+
+			//Create SVG element
+			const svg = d3.select("body")
+                          .append("svg")
+                          .attr("width", width)
+                          .attr("height", height);
+
+			createDots(svg)
+			createLabels(svg);
+			
+			const {xAxis, yAxis} = defineAxes(xScale, yScale);
+			createAxes (svg, xAxis, yAxis);
+
 		</script>
 </body></html>
