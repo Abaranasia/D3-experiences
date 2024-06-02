@@ -96,9 +96,9 @@
 			const createAxes = (svg, xAxis, yAxis) => {
 				//Create X axis
 				svg.append("g")
-				.attr("class", "axis")
-				.attr("transform", "translate(0," + (height - padding) + ")")
-				.call(xAxis);
+					.attr("class", "axis")
+					.attr("transform", "translate(0," + (height - padding) + ")")
+					.call(xAxis);
 				
 				//Create Y axis
 				svg.append("g")
