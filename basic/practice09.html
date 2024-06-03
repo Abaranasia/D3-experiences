@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
+    <title>Practice 09 - Animated Bar Chart</title>
+    <style>
+        div.bar {
+          display: inline-block;
+          width: 20px;
+          height: 75px; /* We'll override height later */
+          margin: 5px;
+          background-color: teal;
+        }
+    </style>
+    <script>
+        const width = 800;
+        const height = 300;
+        const barPadding = 1;
+        const numPoints = 25;
+        const dataset= [];
+
+        const populateDataset = () => {
+            for (let i = 0; i < numPoints; i++) {
+                dataset.push(Math.floor(Math.random() *i*4 ));
+            };
+            console.log('dataset', dataset)
+        };
+  
+        const generateNumbers = () => { 
+            resetDataset()
+            populateDataset();
+            update();
+        };
+
+        const resetDataset = () => {
+            dataset.splice(0, dataset.length);
+        }
+    </script>
+</head>
+<body>
+    <button onclick="generateNumbers()">Generar números</button>
+    <script type="text/javascript">
+        const body = d3.select("body");
+        const h1 = body.append("h3").text("Practice 9 - Animated Bar Chart");
+
+        const svg = d3.select("body") // Create SVG element
+          .append("svg")
+          .attr("width", width)
+          .attr("height", height);
+    
+        const update = () => { 
+            svg.selectAll("rect") // Definición de cada elemento rectángulo
+            .data(dataset) // carga del dataset
+            .join("rect")
+            .attr("x", (d, i) => i * (width / dataset.length))
+            .attr("y", height)
+            .attr("width", width / dataset.length - barPadding) // Anchura del rectángulo
+            .attr("height", (d) => d * 4)
+            .attr("fill", (d) => `rgb(${Math.round(d*10)}, 0, 0 )`)
+    
+            .transition() // definir animación de transición
+            .duration(1000) // duración de la animación
+            .attr("y", (d) => height - (d * 4))
+            .ease(d3.easeQuadOut) // efecto de animación: rebote 
+    
+            svg.selectAll("text") // Texto en rectángulo
+            .data(dataset)
+            .join("text")
+            .text((d) => Math.round(d))
+            .attr("text-anchor", "middle") // posición centrada dentro de los rectángulos
+            .attr("x", (d, i) => i * (width / dataset.length) + (width / dataset.length - barPadding) / 2)
+            .attr("y", (d) => height - (d * 2))
+            .attr("font-family", "sans-serif")
+            .attr("font-size", "11px")
+            .attr("fill", "white");
+         }
+         
+         generateNumbers();
+    </script>
+</body>
+</html>
