@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+    <title>Practice 10 - Kernel Density Estimator chart</title>
+    <script>
+        // set the dimensions and margins of the graph
+        const margin = {top: 30, right: 30, bottom: 30, left: 50};
+        const width = 1000 - margin.left - margin.right
+        const height = 400 - margin.top - margin.bottom;
+
+               // Function to compute density
+        const kernelDensityEstimator = (kernel, X) => {
+            return function(V) {
+                return X.map(function(x) {
+                return [x, d3.mean(V, function(v) { return kernel(x - v); })];
+                });
+            };
+        }
+
+        const kernelEpanechnikov = (k) => {
+            return function(v) {
+                return Math.abs(v /= k) <= 1 ? 0.75 * (1 - v * v) / k : 0;
+            };
+        }
+    </script>
+</head>
+<body>
+    <div id="my_dataviz"></div>
+    <script>
+        // append the svg object to the body of the page
+        const svg = d3.select("#my_dataviz")
+        .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // get the data
+        d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/1_OneNum.csv").then( function(data) {
+
+        // add the x Axis
+        const x = d3.scaleLinear()
+                    .domain([0, 1000])
+                    .range([0, width]);
+        svg.append("g")
+            .attr("transform", `translate(0, ${height})`)
+            .call(d3.axisBottom(x));
+
+        // add the y Axis
+        const y = d3.scaleLinear()
+                    .range([height, 0])
+                    .domain([0, 0.01]);
+        svg.append("g")
+            .call(d3.axisLeft(y));
+
+        // Compute kernel density estimation
+        const kde = kernelDensityEstimator(kernelEpanechnikov(7), x.ticks(40))
+        const density =  kde( data.map((d) => d.price) )
+
+        // Plot the area
+        svg.append("path")
+            .attr("class", "mypath")
+            .datum(density)
+            .attr("fill", "yellow")
+            .attr("opacity", ".8")
+            .attr("stroke", "red")
+            .attr("stroke-width", 1)
+            .attr("stroke-linejoin", "round")
+            .attr("d",  d3.line()
+                .curve(d3.curveBasis)
+                .x(function(d) { return x(d[0]); })
+                .y(function(d) { return y(d[1]); })
+            );
+
+        });
+
+
+ 
+
+    </script>
+</body>
+</html>
